@@ -37,13 +37,13 @@ function renderList(items) {
 
 function renderDetails(company) {
   const disclaimer = document.getElementById("disclaimer");
-  const clocks = document.getElementById("clocksSection"); // show/hide clocks
+  const clocks = document.getElementById("clocksSection");
 
   if (!company) {
     detailsEl.classList.remove("show");
     detailsEl.innerHTML = "";
     if (disclaimer) disclaimer.classList.add("hidden");
-    if (clocks) clocks.classList.remove("hidden"); // show clocks
+    if (clocks) clocks.classList.remove("hidden"); // show clocks when nothing selected
     return;
   }
 
@@ -63,7 +63,7 @@ function renderDetails(company) {
   `;
   detailsEl.classList.add("show");
   if (disclaimer) disclaimer.classList.remove("hidden");
-  if (clocks) clocks.classList.add("hidden"); // hide clocks
+  if (clocks) clocks.classList.add("hidden"); // hide clocks when details visible
 }
 
 // ---------- selection / caret control ----------
@@ -86,7 +86,7 @@ function applyFilter() {
 // ---------- init ----------
 async function init() {
   try {
-    const res = await fetch("companies.json"); // serve via localhost
+    const res = await fetch("companies.json"); // serve via localhost/host
     companies = await res.json();
     companies.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -124,17 +124,14 @@ function atBottom() {
   const scrollBottom = Math.ceil(window.scrollY + window.innerHeight);
   return scrollBottom >= doc.scrollHeight - 1;
 }
-function updateFooter() {
-  if (!footer) return;
-  footer.classList.toggle("show", atBottom());
-}
+function updateFooter() { if (footer) footer.classList.toggle("show", atBottom()); }
 window.addEventListener("load", updateFooter);
 window.addEventListener("scroll", updateFooter, { passive: true });
 window.addEventListener("resize", updateFooter);
 const mo = new MutationObserver(updateFooter);
 mo.observe(document.body, { childList: true, subtree: true });
 
-/* ---------- Analog clocks with subline (NY, London, Sydney, IST) ---------- */
+/* ---------- Analog clocks + subline (NY, London, Sydney, IST) ---------- */
 const analogZones = [
   { id: "clock-ny",  subId: "sub-ny",  tz: "America/New_York" },
   { id: "clock-lon", subId: "sub-lon", tz: "Europe/London" },
@@ -151,10 +148,8 @@ document.querySelectorAll(".analog-clock .numbers").forEach(container => {
     const span = document.createElement("span");
     span.textContent = i;
     const angle = (i - 3) * (Math.PI * 2 / 12); // 12 at top
-    const x = center + radius * Math.cos(angle);
-    const y = center + radius * Math.sin(angle);
-    span.style.left = `${x}px`;
-    span.style.top  = `${y}px`;
+    span.style.left = `${center + radius * Math.cos(angle)}px`;
+    span.style.top  = `${center + radius * Math.sin(angle)}px`;
     container.appendChild(span);
   }
 });
