@@ -89,39 +89,58 @@
 
   <!-- Firebase presence (live "Online: N") -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, onValue, onDisconnect, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getDatabase, ref, onValue, onDisconnect, push, set, remove
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // TODO: Replace with your Firebase project config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+  // ---- FILL THESE WITH YOUR REAL VALUES ----
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.YOUR_REGION.firebasedatabase.app",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db  = getDatabase(app);
+  // Use explicit URL so we hit the correct RTDB instance (important on GitHub Pages)
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app, firebaseConfig.databaseURL);
 
-    // Each open tab adds an entry under /presence/connections and removes it on disconnect
+  const badge = document.getElementById("onlineBadge");
+  const log = (msg, obj) => { console.log("[presence]", msg, obj ?? ""); };
+
+  try {
+    // Each tab adds itself under /presence/connections
     const connectionsRef = ref(db, "presence/connections");
-    const myEntryRef = push(connectionsRef);
-
+    const myRef = push(connectionsRef);
     const tabId = (Math.random().toString(36).slice(2) + Date.now().toString(36)).toUpperCase();
-    await set(myEntryRef, { tabId, ts: Date.now() });
-    onDisconnect(myEntryRef).remove();
 
-    const badge = document.getElementById("onlineBadge");
+    // Try to write this tab's presence
+    await set(myRef, { tabId, ts: Date.now(), ua: navigator.userAgent });
+
+    // Ensure removal on close/offline
+    onDisconnect(myRef).remove().catch(e => log("onDisconnect error", e));
+
+    // Live count
     onValue(connectionsRef, snap => {
-      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      const val = snap.val();
+      const count = val ? Object.keys(val).length : 0;
       if (badge) badge.textContent = `Online: ${count}`;
+      log("count update", count);
     });
 
-    // keep timestamp fresh (optional)
-    setInterval(() => set(myEntryRef, { tabId, ts: Date.now() }), 60_000);
-  </script>
+    // Refresh timestamp (optional)
+    setInterval(() => set(myRef, { tabId, ts: Date.now(), ua: navigator.userAgent }), 60_000);
+
+  } catch (e) {
+    // If you see this in DevTools, it’s almost always rules or a bad databaseURL/config
+    log("presence setup failed", e);
+    if (badge) badge.textContent = "Online: —";
+  }
+</script>
+
 </body>
 </html>
