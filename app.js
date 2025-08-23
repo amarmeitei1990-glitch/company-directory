@@ -37,11 +37,13 @@ function renderList(items) {
 
 function renderDetails(company) {
   const disclaimer = document.getElementById("disclaimer");
+  const clocks = document.getElementById("clocksSection"); // show/hide clocks
 
   if (!company) {
     detailsEl.classList.remove("show");
     detailsEl.innerHTML = "";
     if (disclaimer) disclaimer.classList.add("hidden");
+    if (clocks) clocks.classList.remove("hidden"); // show clocks
     return;
   }
 
@@ -61,45 +63,22 @@ function renderDetails(company) {
   `;
   detailsEl.classList.add("show");
   if (disclaimer) disclaimer.classList.remove("hidden");
+  if (clocks) clocks.classList.add("hidden"); // hide clocks
 }
 
 // ---------- selection / caret control ----------
-function lockSearchUI() {
-  searchEl.readOnly = true;
-  searchEl.classList.add("no-caret");
-  setTimeout(() => searchEl.blur(), 0);
-}
-function unlockSearchUI() {
-  searchEl.readOnly = false;
-  searchEl.classList.remove("no-caret");
-}
-
-function chooseCompany(chosen) {
-  searchEl.value = chosen.name;
-  filtered = [];
-  renderList([]);
-  renderDetails(chosen);
-  lockSearchUI();
-}
-
-searchEl.addEventListener("focus", () => {
-  if (searchEl.readOnly) unlockSearchUI();
-});
+function lockSearchUI() { searchEl.readOnly = true; searchEl.classList.add("no-caret"); setTimeout(() => searchEl.blur(), 0); }
+function unlockSearchUI() { searchEl.readOnly = false; searchEl.classList.remove("no-caret"); }
+function chooseCompany(chosen) { searchEl.value = chosen.name; filtered = []; renderList([]); renderDetails(chosen); lockSearchUI(); }
+searchEl.addEventListener("focus", () => { if (searchEl.readOnly) unlockSearchUI(); });
 
 // ---------- filtering ----------
 function applyFilter() {
   const q = norm(searchEl.value);
-
-  if (!q) {
-    renderList([]);
-    renderDetails(null);
-    return;
-  }
-
+  if (!q) { renderList([]); renderDetails(null); return; }
   filtered = companies.filter(c => norm(c.name).startsWith(q));
   const exact = filtered.find(c => norm(c.name) === q);
   if (exact) { chooseCompany(exact); return; }
-
   renderList(filtered);
   renderDetails(null);
 }
@@ -107,7 +86,7 @@ function applyFilter() {
 // ---------- init ----------
 async function init() {
   try {
-    const res = await fetch("companies.json"); // run via a local server
+    const res = await fetch("companies.json"); // serve via localhost
     companies = await res.json();
     companies.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -190,7 +169,6 @@ function updateAnalogClocks() {
     const minEl = el.querySelector(".hand.minute");
     const secEl = el.querySelector(".hand.second");
 
-    // localized parts for hands (24h)
     const parts = new Intl.DateTimeFormat("en-US", {
       timeZone: z.tz, hour: "numeric", minute: "numeric", second: "numeric", hour12: false
     }).formatToParts(now);
@@ -199,12 +177,10 @@ function updateAnalogClocks() {
     const m = +parts.find(p => p.type === "minute").value;
     const s = +parts.find(p => p.type === "second").value;
 
-    // set hands
     hrEl.style.transform  = `translate(-50%, 0) rotate(${(h % 12) * 30 + m * 0.5}deg)`;
     minEl.style.transform = `translate(-50%, 0) rotate(${m * 6 + s * 0.1}deg)`;
     secEl.style.transform = `translate(-50%, 0) rotate(${s * 6}deg)`;
 
-    // set "Day HH:MM:SS" in 24-hour format
     const subEl = document.getElementById(z.subId);
     if (subEl){
       const day  = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: z.tz }).format(now);
