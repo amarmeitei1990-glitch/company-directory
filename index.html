@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Online users badge -->
+  <div id="onlineBadge" class="online-badge" aria-live="polite">Online: 0</div>
+
   <main class="container">
     <h1 class="title">Company Directory</h1>
 
@@ -15,7 +18,7 @@
     <input id="search" class="search" type="text" placeholder="Type company name..." autocomplete="off" />
     <ul id="companyList" class="list hidden" aria-label="Company results"></ul>
 
-    <!-- World clocks (will hide when details are visible) -->
+    <!-- World clocks (auto-hide when details are shown) -->
     <section id="clocksSection" class="clocks" aria-label="World clocks">
       <div class="clock-card">
         <div class="zone">New York</div>
@@ -83,5 +86,42 @@
   <footer id="footer">© 2025 Y Amarjit Singh. All rights reserved.</footer>
 
   <script defer src="app.js"></script>
+
+  <!-- Firebase presence (live "Online: N") -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, onDisconnect, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // TODO: Replace with your Firebase project config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // Each open tab adds an entry under /presence/connections and removes it on disconnect
+    const connectionsRef = ref(db, "presence/connections");
+    const myEntryRef = push(connectionsRef);
+
+    const tabId = (Math.random().toString(36).slice(2) + Date.now().toString(36)).toUpperCase();
+    await set(myEntryRef, { tabId, ts: Date.now() });
+    onDisconnect(myEntryRef).remove();
+
+    const badge = document.getElementById("onlineBadge");
+    onValue(connectionsRef, snap => {
+      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      if (badge) badge.textContent = `Online: ${count}`;
+    });
+
+    // keep timestamp fresh (optional)
+    setInterval(() => set(myEntryRef, { tabId, ts: Date.now() }), 60_000);
+  </script>
 </body>
 </html>
