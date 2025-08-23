@@ -15,7 +15,58 @@
     <input id="search" class="search" type="text" placeholder="Type company name..." autocomplete="off" />
     <ul id="companyList" class="list hidden" aria-label="Company results"></ul>
 
-    <!-- Card + disclaimer kept together -->
+    <!-- World clocks -->
+    <section class="clocks" aria-label="World clocks">
+      <div class="clock-card">
+        <div class="zone">New York</div>
+        <div class="subtime" id="sub-ny"></div>
+        <div class="analog-clock" id="clock-ny">
+          <div class="numbers"></div>
+          <div class="hand hour"></div>
+          <div class="hand minute"></div>
+          <div class="hand second"></div>
+          <div class="center"></div>
+        </div>
+      </div>
+
+      <div class="clock-card">
+        <div class="zone">London</div>
+        <div class="subtime" id="sub-lon"></div>
+        <div class="analog-clock" id="clock-lon">
+          <div class="numbers"></div>
+          <div class="hand hour"></div>
+          <div class="hand minute"></div>
+          <div class="hand second"></div>
+          <div class="center"></div>
+        </div>
+      </div>
+
+      <div class="clock-card">
+        <div class="zone">Australia</div>
+        <div class="subtime" id="sub-syd"></div>
+        <div class="analog-clock" id="clock-syd">
+          <div class="numbers"></div>
+          <div class="hand hour"></div>
+          <div class="hand minute"></div>
+          <div class="hand second"></div>
+          <div class="center"></div>
+        </div>
+      </div>
+
+      <div class="clock-card">
+        <div class="zone">India</div>
+        <div class="subtime" id="sub-ist"></div>
+        <div class="analog-clock" id="clock-ist">
+          <div class="numbers"></div>
+          <div class="hand hour"></div>
+          <div class="hand minute"></div>
+          <div class="hand second"></div>
+          <div class="center"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Details card + disclaimer -->
     <div id="detailsWrapper">
       <section id="details" class="card" aria-live="polite"></section>
 
@@ -27,7 +78,10 @@
       </div>
     </div>
   </main>
- 
+
+  <!-- Footer (only shows at page bottom) -->
+  <footer id="footer">© 2025 Y Amarjit Singh. All rights reserved.</footer>
+
   <script defer src="app.js"></script>
 </body>
 </html>
