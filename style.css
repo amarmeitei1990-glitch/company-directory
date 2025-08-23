@@ -34,6 +34,22 @@ body{
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
+/* Online badge */
+.online-badge{
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 2000;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.2);
+  backdrop-filter: blur(6px);
+}
+
 .search{
   width:100%; padding:16px 18px; font-size:18px; border:none; outline:none;
   border-radius:var(--radius);
@@ -124,15 +140,8 @@ body{
 }
 .clock-card { text-align: center; }
 .zone { font-weight: 600; color: var(--muted); margin-bottom: 4px; font-size: 15px; }
+.subtime{ margin:0 0 10px; font-size:13px; color:#5a6470; }
 
-.subtime{
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 13px;
-  color: #5a6470;
-}
-
-/* Round analog clock */
 .analog-clock {
   width: 140px; height: 140px; border-radius: 50%;
   margin: 0 auto; position: relative;
@@ -145,39 +154,22 @@ body{
   content:""; position:absolute; width:120px; height:120px;
   background:#fff; border-radius:50%; z-index:1;
 }
-
-/* Numbers 1–12 */
-.analog-clock .numbers{
-  position:absolute; inset:0; border-radius:50%; z-index:2;
-}
+.analog-clock .numbers{ position:absolute; inset:0; border-radius:50%; z-index:2; }
 .analog-clock .numbers span{
   position:absolute; width:22px; height:22px; text-align:center;
   font-size:13px; font-weight:700; color:#222;
-  transform:translate(-50%, -50%);
-  user-select:none;
+  transform:translate(-50%, -50%); user-select:none;
 }
-
-/* Hands */
-.hand{
-  position:absolute; bottom:50%; left:50%;
-  transform-origin:bottom center; z-index:2;
-}
+.hand{ position:absolute; bottom:50%; left:50%; transform-origin:bottom center; z-index:2; }
 .hand.hour{ width:6px; height:40px; background:#333; border-radius:4px; }
 .hand.minute{ width:4px; height:55px; background:#555; border-radius:4px; }
 .hand.second{ width:2px; height:60px; background:#e53935; border-radius:2px; }
+.center{ position:absolute; width:12px; height:12px; background:#000; border-radius:50%; z-index:3; top:50%; left:50%; transform:translate(-50%, -50%); }
 
-/* Center dot */
-.center{
-  position:absolute; width:12px; height:12px; background:#000;
-  border-radius:50%; z-index:3; top:50%; left:50%;
-  transform:translate(-50%, -50%);
-}
-
-/* responsive clocks grid */
 @media (max-width: 960px){ .clocks{ grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px){ .clocks{ grid-template-columns: 1fr; } }
 
-/* Footer (only visible at bottom) */
+/* Footer (only visible at bottom) — same palette feel */
 #footer{
   position: fixed; left:0; right:0; bottom:0; width:100%;
   text-align:center;
@@ -188,5 +180,4 @@ body{
   opacity:0; pointer-events:none; transform:translateY(6px);
   transition:opacity .25s ease, transform .25s ease; z-index:1000;
 }
-
 #footer.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
