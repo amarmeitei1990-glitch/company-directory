@@ -41,7 +41,7 @@ function renderDetails(company) {
   if (!company) {
     detailsEl.classList.remove("show");
     detailsEl.innerHTML = "";
-    if (disclaimer) disclaimer.classList.add("hidden"); // hide disclaimer
+    if (disclaimer) disclaimer.classList.add("hidden");
     return;
   }
 
@@ -60,14 +60,14 @@ function renderDetails(company) {
     ).join("")}
   `;
   detailsEl.classList.add("show");
-  if (disclaimer) disclaimer.classList.remove("hidden"); // show disclaimer
+  if (disclaimer) disclaimer.classList.remove("hidden");
 }
 
 // ---------- selection / caret control ----------
 function lockSearchUI() {
-  searchEl.readOnly = true;             // block typing
-  searchEl.classList.add("no-caret");   // CSS hides caret
-  setTimeout(() => searchEl.blur(), 0); // ensure no caret remains
+  searchEl.readOnly = true;
+  searchEl.classList.add("no-caret");
+  setTimeout(() => searchEl.blur(), 0);
 }
 function unlockSearchUI() {
   searchEl.readOnly = false;
@@ -75,21 +75,15 @@ function unlockSearchUI() {
 }
 
 function chooseCompany(chosen) {
-  searchEl.value = chosen.name; // auto-complete
+  searchEl.value = chosen.name;
   filtered = [];
   renderList([]);
   renderDetails(chosen);
   lockSearchUI();
 }
 
-// Re-enable typing when user clicks the search box again
 searchEl.addEventListener("focus", () => {
-  if (searchEl.readOnly) {
-    unlockSearchUI();
-    // Optional: clear for a fresh search
-    // searchEl.value = "";
-    // renderDetails(null);
-  }
+  if (searchEl.readOnly) unlockSearchUI();
 });
 
 // ---------- filtering ----------
@@ -98,63 +92,128 @@ function applyFilter() {
 
   if (!q) {
     renderList([]);
-    renderDetails(null); // also hides disclaimer
+    renderDetails(null);
     return;
   }
 
-  // Only names that START WITH the query
   filtered = companies.filter(c => norm(c.name).startsWith(q));
-
-  // If exact match -> select it (auto-fill + hide list + details + disclaimer)
   const exact = filtered.find(c => norm(c.name) === q);
-  if (exact) {
-    chooseCompany(exact);
-    return;
-  }
+  if (exact) { chooseCompany(exact); return; }
 
-  // Show suggestions only
   renderList(filtered);
-  renderDetails(null); // keep details (and disclaimer) hidden until chosen
+  renderDetails(null);
 }
 
-// ---------- init & events ----------
+// ---------- init ----------
 async function init() {
   try {
-    const res = await fetch("companies.json");
+    const res = await fetch("companies.json"); // run via a local server
     companies = await res.json();
     companies.sort((a, b) => a.name.localeCompare(b.name));
 
-    // start hidden
     listEl.classList.add("hidden");
     detailsEl.classList.remove("show");
     const disclaimer = document.getElementById("disclaimer");
     if (disclaimer) disclaimer.classList.add("hidden");
 
-    // typing
     searchEl.addEventListener("input", applyFilter);
 
-    // Enter chooses current suggestion (exact match preferred)
     searchEl.addEventListener("keydown", e => {
       if (e.key !== "Enter" || !filtered.length) return;
       const q = norm(searchEl.value);
       const exact = filtered.find(c => norm(c.name) === q);
-      const chosen = exact || filtered[0];
-      chooseCompany(chosen);
+      chooseCompany(exact || filtered[0]);
     });
 
-    // Click a suggestion to choose
     listEl.addEventListener("click", e => {
       const li = e.target.closest("li[data-i]");
       if (!li) return;
-      const chosen = filtered[Number(li.dataset.i)];
-      chooseCompany(chosen);
+      chooseCompany(filtered[Number(li.dataset.i)]);
     });
 
-    // Disable right-click everywhere
     document.addEventListener("contextmenu", e => e.preventDefault());
   } catch (err) {
     console.error("Failed to load companies.json", err);
   }
 }
-
 init();
+
+/* ---------- Footer: show only when at bottom ---------- */
+const footer = document.getElementById("footer");
+function atBottom() {
+  const doc = document.documentElement;
+  const scrollBottom = Math.ceil(window.scrollY + window.innerHeight);
+  return scrollBottom >= doc.scrollHeight - 1;
+}
+function updateFooter() {
+  if (!footer) return;
+  footer.classList.toggle("show", atBottom());
+}
+window.addEventListener("load", updateFooter);
+window.addEventListener("scroll", updateFooter, { passive: true });
+window.addEventListener("resize", updateFooter);
+const mo = new MutationObserver(updateFooter);
+mo.observe(document.body, { childList: true, subtree: true });
+
+/* ---------- Analog clocks with subline (NY, London, Sydney, IST) ---------- */
+const analogZones = [
+  { id: "clock-ny",  subId: "sub-ny",  tz: "America/New_York" },
+  { id: "clock-lon", subId: "sub-lon", tz: "Europe/London" },
+  { id: "clock-syd", subId: "sub-syd", tz: "Australia/Sydney" },
+  { id: "clock-ist", subId: "sub-ist", tz: "Asia/Kolkata" },
+];
+
+// Generate numbers 1–12 around each dial
+document.querySelectorAll(".analog-clock .numbers").forEach(container => {
+  const size = container.parentElement.offsetWidth; // 140
+  const center = size / 2;                           // 70
+  const radius = center - 20;                        // ~50
+  for (let i = 1; i <= 12; i++) {
+    const span = document.createElement("span");
+    span.textContent = i;
+    const angle = (i - 3) * (Math.PI * 2 / 12); // 12 at top
+    const x = center + radius * Math.cos(angle);
+    const y = center + radius * Math.sin(angle);
+    span.style.left = `${x}px`;
+    span.style.top  = `${y}px`;
+    container.appendChild(span);
+  }
+});
+
+function updateAnalogClocks() {
+  const now = new Date();
+  analogZones.forEach(z => {
+    const el = document.getElementById(z.id);
+    if (!el) return;
+
+    const hrEl  = el.querySelector(".hand.hour");
+    const minEl = el.querySelector(".hand.minute");
+    const secEl = el.querySelector(".hand.second");
+
+    // localized parts for hands (24h)
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: z.tz, hour: "numeric", minute: "numeric", second: "numeric", hour12: false
+    }).formatToParts(now);
+
+    const h = +parts.find(p => p.type === "hour").value;
+    const m = +parts.find(p => p.type === "minute").value;
+    const s = +parts.find(p => p.type === "second").value;
+
+    // set hands
+    hrEl.style.transform  = `translate(-50%, 0) rotate(${(h % 12) * 30 + m * 0.5}deg)`;
+    minEl.style.transform = `translate(-50%, 0) rotate(${m * 6 + s * 0.1}deg)`;
+    secEl.style.transform = `translate(-50%, 0) rotate(${s * 6}deg)`;
+
+    // set "Day HH:MM:SS" in 24-hour format
+    const subEl = document.getElementById(z.subId);
+    if (subEl){
+      const day  = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: z.tz }).format(now);
+      const time = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: z.tz
+      }).format(now);
+      subEl.textContent = `${day} ${time}`;
+    }
+  });
+}
+updateAnalogClocks();
+setInterval(updateAnalogClocks, 1000);
