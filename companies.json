@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Amazon",
+    "website": "https://www.amazon.com",
+    "phone": "+1-888-280-4331",
+    "helpPage": "https://www.amazon.com/gp/help/customer/display.html",
+    "social": {
+      "twitter": "https://twitter.com/amazon",
+      "facebook": "https://facebook.com/Amazon"
+    }
+  },
+  {
+    "name": "Apple",
+    "website": "https://www.apple.com",
+    "phone": "+1-800-275-2273",
+    "helpPage": "https://support.apple.com",
+    "social": {
+      "twitter": "https://twitter.com/AppleSupport",
+      "facebook": "https://facebook.com/apple"
+    }
+  },
+  {
+    "name": "Microsoft",
+    "website": "https://www.microsoft.com",
+    "phone": "+1-800-642-7676",
+    "helpPage": "https://support.microsoft.com",
+    "social": {
+      "twitter": "https://twitter.com/MicrosoftHelps",
+      "facebook": "https://facebook.com/Microsoft"
+    }
+  }
+]

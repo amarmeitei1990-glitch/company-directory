@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Company Directory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1 class="title">Company Directory</h1>
+
+    <label class="sr-only" for="search">Search companies</label>
+    <input id="search" class="search" type="text" placeholder="Type company name..." autocomplete="off" />
+    <ul id="companyList" class="list hidden" aria-label="Company results"></ul>
+
+    <!-- Card + disclaimer kept together -->
+    <div id="detailsWrapper">
+      <section id="details" class="card" aria-live="polite"></section>
+
+      <div id="disclaimer" class="disclaimer hidden">
+        <strong>Disclaimer:</strong>
+        The contact details provided here are for reference only and may be subject to change.
+        Please verify the latest information directly from the company's official website
+        before sharing with customers.
+      </div>
+    </div>
+  </main>
+ <footer class="copyright">
+  © 2025 Y Amarjit Singh. All rights reserved.
+</footer>
+  <script defer src="app.js"></script>
+</body>
+</html>
