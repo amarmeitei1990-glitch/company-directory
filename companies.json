@@ -114,7 +114,7 @@
   {
     "name": "PayPal (US)",
     "website": "https://www.paypal.com",
-    "phone": "Use Help Center for phone options",
+    "phone": "1-888-221-1161",
     "helpPage": "https://www.paypal.com/us/cshelp/contact-us",
     "social": { "twitter": "https://twitter.com/AskPayPal", "facebook": "https://facebook.com/paypal" }
   },
@@ -133,3 +133,4 @@
     "social": { "twitter": "https://twitter.com/hulusupport", "facebook": "https://facebook.com/hulu" }
   }
 ]
+
