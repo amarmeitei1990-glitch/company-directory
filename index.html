@@ -8,9 +8,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Online users badge -->
-  <div id="onlineBadge" class="online-badge" aria-live="polite">Online: 0</div>
-
   <main class="container">
     <h1 class="title">Company Directory</h1>
 
@@ -18,7 +15,7 @@
     <input id="search" class="search" type="text" placeholder="Type company name..." autocomplete="off" />
     <ul id="companyList" class="list hidden" aria-label="Company results"></ul>
 
-    <!-- World clocks (auto-hide when details are shown) -->
+    <!-- World clocks -->
     <section id="clocksSection" class="clocks" aria-label="World clocks">
       <div class="clock-card">
         <div class="zone">New York</div>
@@ -31,7 +28,6 @@
           <div class="center"></div>
         </div>
       </div>
-
       <div class="clock-card">
         <div class="zone">London</div>
         <div class="subtime" id="sub-lon"></div>
@@ -43,7 +39,6 @@
           <div class="center"></div>
         </div>
       </div>
-
       <div class="clock-card">
         <div class="zone">Australia</div>
         <div class="subtime" id="sub-syd"></div>
@@ -55,7 +50,6 @@
           <div class="center"></div>
         </div>
       </div>
-
       <div class="clock-card">
         <div class="zone">India</div>
         <div class="subtime" id="sub-ist"></div>
@@ -69,10 +63,9 @@
       </div>
     </section>
 
-    <!-- Details card + disclaimer -->
+    <!-- Details -->
     <div id="detailsWrapper">
       <section id="details" class="card" aria-live="polite"></section>
-
       <div id="disclaimer" class="disclaimer hidden">
         <strong>Disclaimer:</strong>
         The contact details provided here are for reference only and may be subject to change.
@@ -82,65 +75,9 @@
     </div>
   </main>
 
-  <!-- Footer (only shows at page bottom) -->
+  <!-- Footer -->
   <footer id="footer">© 2025 Y Amarjit Singh. All rights reserved.</footer>
 
   <script defer src="app.js"></script>
-
-  <!-- Firebase presence (live "Online: N") -->
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getDatabase, ref, onValue, onDisconnect, push, set, remove
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-  // ---- FILL THESE WITH YOUR REAL VALUES ----
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.YOUR_REGION.firebasedatabase.app",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  // Use explicit URL so we hit the correct RTDB instance (important on GitHub Pages)
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app, firebaseConfig.databaseURL);
-
-  const badge = document.getElementById("onlineBadge");
-  const log = (msg, obj) => { console.log("[presence]", msg, obj ?? ""); };
-
-  try {
-    // Each tab adds itself under /presence/connections
-    const connectionsRef = ref(db, "presence/connections");
-    const myRef = push(connectionsRef);
-    const tabId = (Math.random().toString(36).slice(2) + Date.now().toString(36)).toUpperCase();
-
-    // Try to write this tab's presence
-    await set(myRef, { tabId, ts: Date.now(), ua: navigator.userAgent });
-
-    // Ensure removal on close/offline
-    onDisconnect(myRef).remove().catch(e => log("onDisconnect error", e));
-
-    // Live count
-    onValue(connectionsRef, snap => {
-      const val = snap.val();
-      const count = val ? Object.keys(val).length : 0;
-      if (badge) badge.textContent = `Online: ${count}`;
-      log("count update", count);
-    });
-
-    // Refresh timestamp (optional)
-    setInterval(() => set(myRef, { tabId, ts: Date.now(), ua: navigator.userAgent }), 60_000);
-
-  } catch (e) {
-    // If you see this in DevTools, it’s almost always rules or a bad databaseURL/config
-    log("presence setup failed", e);
-    if (badge) badge.textContent = "Online: —";
-  }
-</script>
-
 </body>
 </html>
