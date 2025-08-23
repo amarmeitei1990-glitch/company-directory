@@ -1,32 +1,135 @@
 [
   {
-    "name": "Amazon",
-    "website": "https://www.amazon.com",
-    "phone": "+1-888-280-4331",
-    "helpPage": "https://www.amazon.com/gp/help/customer/display.html",
-    "social": {
-      "twitter": "https://twitter.com/amazon",
-      "facebook": "https://facebook.com/Amazon"
-    }
-  },
-  {
-    "name": "Apple",
+    "name": "Apple (US)",
     "website": "https://www.apple.com",
-    "phone": "+1-800-275-2273",
+    "phone": "1-800-275-2273",
     "helpPage": "https://support.apple.com",
-    "social": {
-      "twitter": "https://twitter.com/AppleSupport",
-      "facebook": "https://facebook.com/apple"
-    }
+    "social": { "twitter": "https://twitter.com/AppleSupport", "facebook": "https://facebook.com/apple" }
   },
   {
-    "name": "Microsoft",
-    "website": "https://www.microsoft.com",
-    "phone": "+1-800-642-7676",
-    "helpPage": "https://support.microsoft.com",
-    "social": {
-      "twitter": "https://twitter.com/MicrosoftHelps",
-      "facebook": "https://facebook.com/Microsoft"
-    }
+    "name": "Apple (UK)",
+    "website": "https://www.apple.com/uk",
+    "phone": "0800 048 0408",
+    "helpPage": "https://support.apple.com/en-gb/contact",
+    "social": { "twitter": "https://twitter.com/AppleSupport", "facebook": "https://facebook.com/apple" }
+  },
+  {
+    "name": "Adobe (US)",
+    "website": "https://www.adobe.com",
+    "phone": "1-800-833-6687",
+    "helpPage": "https://helpx.adobe.com/support.html",
+    "social": { "twitter": "https://twitter.com/AdobeCare", "facebook": "https://facebook.com/Adobe" }
+  },
+  {
+    "name": "AOL (US)",
+    "website": "https://www.aol.com",
+    "phone": "1-800-827-6364",
+    "helpPage": "https://help.aol.com/contact",
+    "social": { "twitter": "https://twitter.com/AOL", "facebook": "https://facebook.com/aol" }
+  },
+  {
+    "name": "Samsung (US)",
+    "website": "https://www.samsung.com/us",
+    "phone": "1-800-726-7864",
+    "helpPage": "https://www.samsung.com/us/support/contact/",
+    "social": { "twitter": "https://twitter.com/SamsungSupport", "facebook": "https://facebook.com/SamsungUS" }
+  },
+  {
+    "name": "Samsung (UK)",
+    "website": "https://www.samsung.com/uk",
+    "phone": "0333 000 0333",
+    "helpPage": "https://www.samsung.com/uk/support/contact/",
+    "social": { "twitter": "https://twitter.com/SamsungUK", "facebook": "https://facebook.com/SamsungUK" }
+  },
+  {
+    "name": "Garmin (UK)",
+    "website": "https://www.garmin.com/en-GB",
+    "phone": "0808 238 0000",
+    "helpPage": "https://support.garmin.com",
+    "social": { "twitter": "https://twitter.com/GarminUK", "facebook": "https://facebook.com/GarminUK" }
+  },
+  {
+    "name": "Garmin (US)",
+    "website": "https://www.garmin.com",
+    "phone": "913-397-0872",
+    "helpPage": "https://support.garmin.com",
+    "social": { "twitter": "https://twitter.com/Garmin", "facebook": "https://facebook.com/Garmin" }
+  },
+  {
+    "name": "Roku (US)",
+    "website": "https://www.roku.com",
+    "phone": "(816) 272-8106",
+    "helpPage": "https://support.roku.com",
+    "social": { "twitter": "https://twitter.com/rokusupport", "facebook": "https://facebook.com/roku" }
+  },
+  {
+    "name": "Canon (UK)",
+    "website": "https://www.canon.co.uk",
+    "phone": "+44 (0)207 660 0186",
+    "helpPage": "https://www.canon.co.uk/support/",
+    "social": { "twitter": "https://twitter.com/canonukireland", "facebook": "https://facebook.com/CanonUK" }
+  },
+  {
+    "name": "Epson (US)",
+    "website": "https://epson.com",
+    "phone": "1-800-444-1527",
+    "helpPage": "https://epson.com/Support/sl/s",
+    "social": { "twitter": "https://twitter.com/EpsonAmerica", "facebook": "https://facebook.com/Epson" }
+  },
+  {
+    "name": "Epson (Canada)",
+    "website": "https://epson.ca",
+    "phone": "905-709-9475",
+    "helpPage": "https://epson.ca/Support",
+    "social": { "twitter": "https://twitter.com/EpsonCanada", "facebook": "https://facebook.com/EpsonCanada" }
+  },
+  {
+    "name": "Verizon (US)",
+    "website": "https://www.verizon.com",
+    "phone": "1-800-922-0204",
+    "helpPage": "https://www.verizon.com/support/",
+    "social": { "twitter": "https://twitter.com/VerizonSupport", "facebook": "https://facebook.com/verizon" }
+  },
+  {
+    "name": "UPS (US)",
+    "website": "https://www.ups.com",
+    "phone": "1-800-742-5877",
+    "helpPage": "https://www.ups.com/us/en/support/contact-us",
+    "social": { "twitter": "https://twitter.com/UPSHelp", "facebook": "https://facebook.com/ups" }
+  },
+  {
+    "name": "FedEx (US)",
+    "website": "https://www.fedex.com",
+    "phone": "1-800-463-3339",
+    "helpPage": "https://www.fedex.com/en-us/customer-support.html",
+    "social": { "twitter": "https://twitter.com/FedExHelp", "facebook": "https://facebook.com/fedex" }
+  },
+  {
+    "name": "DHL (US – eCommerce)",
+    "website": "https://www.dhl.com/us-en/home/ecommerce.html",
+    "phone": "1-800-805-9306",
+    "helpPage": "https://www.dhl.com/us-en/home/ecommerce/business-help-center/contact-dhl-ecommerce-sales-and-business-support.html",
+    "social": { "twitter": "https://twitter.com/DHLUS", "facebook": "https://facebook.com/dhl" }
+  },
+  {
+    "name": "PayPal (US)",
+    "website": "https://www.paypal.com",
+    "phone": "Use Help Center for phone options",
+    "helpPage": "https://www.paypal.com/us/cshelp/contact-us",
+    "social": { "twitter": "https://twitter.com/AskPayPal", "facebook": "https://facebook.com/paypal" }
+  },
+  {
+    "name": "Netflix (US)",
+    "website": "https://www.netflix.com",
+    "phone": "1-844-505-2993",
+    "helpPage": "https://help.netflix.com",
+    "social": { "twitter": "https://twitter.com/netflixhelps", "facebook": "https://facebook.com/netflix" }
+  },
+  {
+    "name": "Hulu (US)",
+    "website": "https://www.hulu.com",
+    "phone": "801-683-0736",
+    "helpPage": "https://help.hulu.com",
+    "social": { "twitter": "https://twitter.com/hulusupport", "facebook": "https://facebook.com/hulu" }
   }
 ]
