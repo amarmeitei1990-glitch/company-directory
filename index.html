@@ -80,7 +80,54 @@
 
   <script defer src="app.js"></script>
 
-  <!-- Firebase Presence (no UI) -->
+  <!-- Firebase Presence (silent tracking, no UI) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, onDisconnect,
+    import { getDatabase, ref, set, onDisconnect, serverTimestamp, update }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // TODO: paste your real config (Project settings → Your apps → Web)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "company-directory-ea220.firebaseapp.com",
+      databaseURL: "https://company-directory-ea220-default-rtdb.firebaseio.com",
+      projectId: "company-directory-ea220",
+      storageBucket: "company-directory-ea220.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // Stable id per BROWSER (so multiple tabs = 1 visitor)
+    const id = (() => {
+      const k = "presenceId";
+      let v = localStorage.getItem(k);
+      if (!v) {
+        v = (crypto.randomUUID && crypto.randomUUID()) || Math.random().toString(36).slice(2);
+        localStorage.setItem(k, v);
+      }
+      return v;
+    })();
+
+    // Write presence and auto-remove on disconnect
+    const meRef = ref(db, "presence/" + id);
+
+    await set(meRef, {
+      online: true,
+      ts: serverTimestamp(),
+      ua: navigator.userAgent,
+      path: location.pathname
+    });
+
+    onDisconnect(meRef).remove();
+
+    // Heartbeat to refresh timestamp while tab stays open (every 60s)
+    setInterval(() => {
+      update(meRef, { ts: serverTimestamp(), path: location.pathname });
+    }, 60_000);
+  </script>
+</body>
+</html>
