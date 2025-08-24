@@ -40,7 +40,7 @@ function renderDetails(company) {
     detailsEl.classList.remove("show");
     detailsEl.innerHTML = "";
     if (disclaimer) disclaimer.classList.add("hidden");
-    if (clocks) clocks.classList.remove("hidden"); // show clocks when nothing selected
+    if (clocks) clocks.classList.remove("hidden");
     return;
   }
 
@@ -67,7 +67,7 @@ function renderDetails(company) {
   `;
   detailsEl.classList.add("show");
   if (disclaimer) disclaimer.classList.remove("hidden");
-  if (clocks) clocks.classList.add("hidden"); // hide clocks when details visible
+  if (clocks) clocks.classList.add("hidden");
 }
 
 // ---------- selection / caret control ----------
@@ -143,7 +143,6 @@ const analogZones = [
   { id: "clock-ist", subId: "sub-ist", tz: "Asia/Kolkata" },
 ];
 
-// Generate numbers 1–12 around each dial
 document.querySelectorAll(".analog-clock .numbers").forEach(container => {
   const size = container.parentElement.offsetWidth;
   const center = size / 2;
