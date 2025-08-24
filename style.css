@@ -45,6 +45,7 @@ body{
 .search:read-only { caret-color: transparent; user-select: none; }
 .search.no-caret::selection { background: transparent; }
 
+/* Suggestion list */
 .list{
   list-style:none; padding:0; margin:0 0 16px;
   background:rgba(255,255,255,.96);
@@ -80,15 +81,11 @@ body{
 @keyframes fadeIn{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
 .card h2{ margin:0 0 14px; font-size:28px; }
 
-.row{
-  display:grid; grid-template-columns:140px 1fr; gap:10px;
-  padding:10px 0; border-top:1px dashed rgba(0,0,0,.08);
-}
+.row{ display:grid; grid-template-columns:140px 1fr; gap:10px; padding:10px 0; border-top:1px dashed rgba(0,0,0,.08); }
 .row:first-of-type{ border-top:0; }
 .label{ color:var(--muted); font-weight:600; }
 .link{ color:#2463eb; text-decoration:none; word-break:break-word; }
 .link:hover{ text-decoration:underline; }
-
 .icon{ width:18px; height:18px; display:inline-block; vertical-align:text-bottom; margin-right:8px; }
 
 #detailsWrapper{ max-width:760px; margin:0 auto; }
@@ -107,17 +104,14 @@ body{
 @media (prefers-reduced-motion: reduce){ .disclaimer{ animation:none; } }
 
 /* a11y helper */
-.sr-only{
-  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
-}
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
 /* ---- World clocks ---- */
-.clocks{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin:24px 0; }
-.clock-card{ text-align:center; }
-.zone{ font-weight:600; color:var(--muted); margin-bottom:4px; font-size:15px; }
+.clocks { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin:24px 0; }
+.clock-card { text-align:center; }
+.zone { font-weight:600; color:var(--muted); margin-bottom:4px; font-size:15px; }
 .subtime{ margin:0 0 10px; font-size:13px; color:#5a6470; }
-.analog-clock{ width:140px; height:140px; border-radius:50%; margin:0 auto; position:relative;
+.analog-clock { width:140px; height:140px; border-radius:50%; margin:0 auto; position:relative;
   background: conic-gradient(#ff6a00,#ee0979,#a18cd1,#fcb045,#ff6a00);
   display:flex; align-items:center; justify-content:center;
   box-shadow: 0 6px 18px rgba(0,0,0,.2) inset, 0 6px 14px rgba(0,0,0,.15);
@@ -132,19 +126,21 @@ body{
 .hand.second{ width:2px; height:60px; background:#e53935; border-radius:2px; }
 .center{ position:absolute; width:12px; height:12px; background:#000; border-radius:50%; z-index:3; top:50%; left:50%; transform:translate(-50%,-50%); }
 
-@media (max-width:960px){ .clocks{ grid-template-columns:repeat(2,1fr); } }
-@media (max-width:520px){ .clocks{ grid-template-columns:1fr; } }
-
 /* Footer */
-#footer{
-  position:fixed; left:0; right:0; bottom:0; width:100%;
+#footer{ position:fixed; left:0; right:0; bottom:0; width:100%;
   text-align:center; background:linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fcb045);
   padding:10px 14px; font-size:14px; color:#333; box-shadow:0 -2px 10px rgba(0,0,0,.12);
-  border-top:1px solid rgba(0,0,0,.06);
-  opacity:0; pointer-events:none; transform:translateY(6px);
-  transition:opacity .25s ease, transform .25s ease; z-index:1000;
-}
+  border-top:1px solid rgba(0,0,0,.06); opacity:0; pointer-events:none; transform:translateY(6px);
+  transition:opacity .25s ease, transform .25s ease; z-index:1000; }
 #footer.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
 
-/* NEW: small text under phone for hours/notes */
+/* Online badge */
+.online-badge{
+  position: fixed; top: 12px; right: 16px; z-index: 2000;
+  background: rgba(0,0,0,.6); color: #fff; font-weight: 700; font-size: 13px;
+  padding: 8px 10px; border-radius: 999px; box-shadow: 0 6px 16px rgba(0,0,0,.2);
+  backdrop-filter: blur(6px);
+}
+
+/* Small text under phone (hours/notes) */
 .subnote{ margin-top:6px; font-size:13px; color:var(--muted); }
