@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Online badge -->
+  <div id="onlineBadge" class="online-badge">Online …</div>
+
   <main class="container">
     <h1 class="title">Company Directory</h1>
 
@@ -79,5 +82,66 @@
   <footer id="footer">© 2025 Y Amarjit Singh. All rights reserved.</footer>
 
   <script defer src="app.js"></script>
+
+  <!-- Firebase Presence -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, onDisconnect, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // 🔧 Replace with your Firebase config (Project settings → Your apps → Web app)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "company-directory-ea220.firebaseapp.com",
+      databaseURL: "https://company-directory-ea220-default-rtdb.firebaseio.com",
+      projectId: "company-directory-ea220",
+      storageBucket: "company-directory-ea220.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const badge = document.getElementById("onlineBadge");
+    const show = msg => { badge.textContent = msg; badge.style.display = "inline-block"; };
+    const log = (...a) => console.log("[presence]", ...a);
+
+    try {
+      if (!firebaseConfig.databaseURL) throw new Error("Missing databaseURL in firebaseConfig.");
+      if (location.protocol === "file:") {
+        console.warn("⚠️ Please run this on http:// or https://, not file://");
+      }
+
+      const app = initializeApp(firebaseConfig);
+      const db  = getDatabase(app);
+      show("Online …");
+
+      // Unique id per browser
+      const id = (() => {
+        const k = "presenceId";
+        let v = localStorage.getItem(k);
+        if (!v) {
+          v = (crypto.randomUUID && crypto.randomUUID()) || Math.random().toString(36).slice(2);
+          localStorage.setItem(k, v);
+        }
+        return v;
+      })();
+      log("client id =", id);
+
+      const meRef = ref(db, "presence/" + id);
+      await set(meRef, { online: true, ts: serverTimestamp(), ua: navigator.userAgent });
+      onDisconnect(meRef).remove();
+
+      const allRef = ref(db, "presence");
+      onValue(allRef, (snap) => {
+        const count = snap.exists() ? snap.numChildren() : 0;
+        show(`Online ${count}`);
+        log("count =", count);
+      }, (err) => {
+        show("Online —");
+        console.error("onValue error:", err);
+      });
+    } catch (err) {
+      console.error(err);
+      show("Online —");
+    }
+  </script>
 </body>
 </html>
