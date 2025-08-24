@@ -13,13 +13,10 @@ const searchEl = $("#search");
 let companies = [];
 let filtered = [];
 
-// ---------- icons ----------
+// ---------- icons (only the two we use) ----------
 const icons = {
   globe: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 100 18 9 9 0 000-18Z" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" stroke="currentColor" stroke-width="2"/></svg>`,
-  phone: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.77 19.77 0 01-8.63-3.07A19.5 19.5 0 013.15 12 19.77 19.77 0 010.08 3.69 2 2 0 012.06 1.5h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.1 9.64a16 16 0 008.26 8.26l1.5-1.23a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2"/></svg>`,
-  life: `<svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M19.07 4.93l-4.24 4.24M9.17 14.83l-4.24 4.24" stroke="currentColor" stroke-width="2"/></svg>`,
-  twitter: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0012 7.09v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" stroke="currentColor" stroke-width="2"/></svg>`,
-  facebook: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" stroke="currentColor" stroke-width="2"/></svg>`
+  phone: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.77 19.77 0 01-8.63-3.07A19.5 19.5 0 013.15 12 19.77 19.77 0 010.08 3.69 2 2 0 012.06 1.5h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.1 9.64a16 16 0 008.26 8.26l1.5-1.23a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2"/></svg>`
 };
 
 // ---------- rendering ----------
@@ -47,12 +44,19 @@ function renderDetails(company) {
     return;
   }
 
+  const phoneBlock = company.phone
+    ? `${icons.phone}<a class="link" href="tel:${esc(company.phone)}">${esc(company.phone)}</a>`
+      + (company.hours ? `<div class="subnote">${esc(company.hours)}</div>` : "")
+    : "—";
+
   const rows = [
-    ["Website", company.website ? `<a class="link" href="${esc(company.website)}" target="_blank" rel="noopener">${icons.globe}${esc(company.website)}</a>` : "—"],
-    ["Phone", company.phone ? `${icons.phone}<a class="link" href="tel:${esc(company.phone)}">${esc(company.phone)}</a>` : "—"],
-    ["Help Page", company.helpPage ? `<a class="link" href="${esc(company.helpPage)}" target="_blank" rel="noopener">${icons.life}${esc(company.helpPage)}</a>` : "—"],
-    ["Twitter", company.social?.twitter ? `<a class="link" href="${esc(company.social.twitter)}" target="_blank" rel="noopener">${icons.twitter}${esc(company.social.twitter)}</a>` : "—"],
-    ["Facebook", company.social?.facebook ? `<a class="link" href="${esc(company.social.facebook)}" target="_blank" rel="noopener">${icons.facebook}${esc(company.social.facebook)}</a>` : "—"]
+    [
+      "Website",
+      company.website
+        ? `<a class="link" href="${esc(company.website)}" target="_blank" rel="noopener">${icons.globe}${esc(company.website)}</a>`
+        : "—"
+    ],
+    ["Phone", phoneBlock]
   ];
 
   detailsEl.innerHTML = `
@@ -86,7 +90,7 @@ function applyFilter() {
 // ---------- init ----------
 async function init() {
   try {
-    const res = await fetch("companies.json"); // serve via localhost/host
+    const res = await fetch("companies.json");
     companies = await res.json();
     companies.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -117,7 +121,7 @@ async function init() {
 }
 init();
 
-/* ---------- Footer: show only when at bottom ---------- */
+/* ---------- Footer visibility ---------- */
 const footer = document.getElementById("footer");
 function atBottom() {
   const doc = document.documentElement;
@@ -131,7 +135,7 @@ window.addEventListener("resize", updateFooter);
 const mo = new MutationObserver(updateFooter);
 mo.observe(document.body, { childList: true, subtree: true });
 
-/* ---------- Analog clocks + subline (NY, London, Sydney, IST) ---------- */
+/* ---------- Analog clocks + subline ---------- */
 const analogZones = [
   { id: "clock-ny",  subId: "sub-ny",  tz: "America/New_York" },
   { id: "clock-lon", subId: "sub-lon", tz: "Europe/London" },
@@ -141,13 +145,13 @@ const analogZones = [
 
 // Generate numbers 1–12 around each dial
 document.querySelectorAll(".analog-clock .numbers").forEach(container => {
-  const size = container.parentElement.offsetWidth; // 140
-  const center = size / 2;                           // 70
-  const radius = center - 20;                        // ~50
+  const size = container.parentElement.offsetWidth;
+  const center = size / 2;
+  const radius = center - 20;
   for (let i = 1; i <= 12; i++) {
     const span = document.createElement("span");
     span.textContent = i;
-    const angle = (i - 3) * (Math.PI * 2 / 12); // 12 at top
+    const angle = (i - 3) * (Math.PI * 2 / 12);
     span.style.left = `${center + radius * Math.cos(angle)}px`;
     span.style.top  = `${center + radius * Math.sin(angle)}px`;
     container.appendChild(span);
